@@ -13,20 +13,26 @@ func TestLink(t *testing.T) {
 	linkList.Append(1)
 	linkList.Append(2)
 	linkList.Append(3)
+	linkList.Append(4)
 
-	//指定位置插入
-	err := linkList.InsertNodeByIndex(4, 4)
+	//指定下标位置插入
+	err := linkList.InsertNodeByIndex(0, 9999)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	linkList.Println()
-	linkList.Delete(5)
+
+	//删除
+	err = linkList.Delete(4)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	linkList.Println()
-	fmt.Println(linkList.Head.Data, linkList.Tail.Data)
 
-	nodeOne := linkList.Search(4)
-	fmt.Println(nodeOne)
+	data := linkList.Search(1)
+	fmt.Printf("searchData:%v\n", data)
 }
