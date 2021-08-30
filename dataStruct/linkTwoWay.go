@@ -10,7 +10,6 @@ type LinkTwoWayMethod interface {
 	InsertNodeByHead(data interface{})                           //插入 - 头插
 	InsertNodeByIndex(index int32, data interface{}) (err error) //插入 - 指定下标插入
 	Append(data interface{})                                     //插入 - 尾部追加
-	Delete(index int32) error                                    //删除
 	Search(index int32) (node *NodeTwoWay, err error)            //查找
 	GetCount() int32                                             //获取个数
 	RemoveHead() error                                           //移除头节点
@@ -18,7 +17,7 @@ type LinkTwoWayMethod interface {
 	RemoveByIndex(index int32) error                             //通过索引移除节点
 }
 
-//LinkList 双向列表列表
+//LinkList 双向列表数据结构
 type LinkList struct {
 	Count int32       //数据个数
 	Head  *NodeTwoWay //表头
@@ -34,7 +33,12 @@ type NodeTwoWay struct {
 
 //CreateLinkTwoWay 创建双向链表
 func CreateLinkTwoWay() *LinkList {
-	return &LinkList{}
+	node := CreateNodeTwoWay(0) //创建哨兵节点
+	return &LinkList{
+		Count: 0,
+		Head:  node,
+		Tail:  node,
+	}
 }
 
 /*
@@ -53,18 +57,23 @@ func CreateNodeTwoWay(data interface{}) *NodeTwoWay {
 /*
 InsertNodeByHead
 @Desc	头插
-@Param	data	int32	插入数据
+@Param	data	interface{}	插入数据
 */
 func (l *LinkList) InsertNodeByHead(data interface{}) {
+	//新节点
+	firstNode := l.Head.Next
 	newNode := CreateNodeTwoWay(data)
-	newNode.Next = l.Head
+	newNode.Next = firstNode
+	newNode.Prev = l.Head
 
-	if l.Head == nil {
-		l.Head = newNode
-		l.Tail = newNode
+	//更新第一个节点
+	l.Head.Next = newNode
+
+	//更新旧节点指向和尾巴节点
+	if firstNode != nil {
+		firstNode.Prev = newNode
 	} else {
-		l.Head.Prev = newNode
-		l.Head = newNode
+		l.Tail = newNode
 	}
 
 	l.Count++
@@ -119,16 +128,18 @@ Append
 */
 func (l *LinkList) Append(data interface{}) {
 	newNode := CreateNodeTwoWay(data)
+	tailNode := l.Tail
 
-	if l.Head == nil {
-		l.Head = newNode
-		l.Tail = newNode
+	//空链表
+	if tailNode.Prev == nil {
+		newNode.Prev = l.Head
+		l.Head.Next = newNode
 	} else {
-		newNode.Prev = l.Tail
-		l.Tail.Next = newNode
-		l.Tail = newNode
+		newNode.Prev = tailNode
+		tailNode.Next = newNode
 	}
 
+	l.Tail = newNode
 	l.Count++
 }
 
@@ -143,32 +154,9 @@ func (l *LinkList) Search(index int32) (node *NodeTwoWay, err error) {
 		return
 	}
 
-	node = l.Head
+	node = l.Head.Next
 	for i := int32(0); i < index; i++ {
 		node = node.Next
-	}
-
-	return
-}
-
-/*
-Delete
-@Desc 	删除节点
-@Param	index int32	索引位置
-*/
-func (l *LinkList) Delete(index int32) (err error) {
-	if index < 0 || index >= l.Count {
-		err = errors.New("index out of range for delete node")
-		return
-	}
-
-	switch index {
-	case 0:
-		err = l.RemoveHead() //删除头节点
-	case l.Count - 1:
-		err = l.RemoveTail() //删除尾节点
-	default:
-		err = l.RemoveByIndex(index) //删除指定索引节点
 	}
 
 	return
@@ -179,14 +167,26 @@ RemoveHead
 @Desc	删除头节点
 */
 func (l *LinkList) RemoveHead() (err error) {
-	if l.Head != nil {
-		nextNode := l.Head.Next
-		nextNode.Prev = nil
-		l.Head = nextNode
-		l.Count--
-	} else {
-		err = errors.New("func RemoveHead is failed")
+	//验证是否空链表
+	firstNode := l.Head.Next
+	if firstNode == nil {
+		err = errors.New("is an empty list for remove head")
+		return
 	}
+
+	//更新第二节点指向
+	secondNode := firstNode.Next
+	l.Head.Next = secondNode
+	if secondNode != nil {
+		secondNode.Prev = l.Head
+	}
+
+	//更新尾节点
+	if l.Count == 1 {
+		l.Tail = l.Head
+	}
+
+	l.Count--
 	return
 }
 
@@ -195,37 +195,46 @@ RemoveTail
 @Desc	删除尾节点
 */
 func (l *LinkList) RemoveTail() (err error) {
-	if l.Tail != nil && l.Tail.Prev != nil {
-		l.Tail.Prev.Next = nil
-		l.Tail = l.Tail.Prev
-		l.Count--
-	} else {
-		err = errors.New("func RemoveTail is failed")
+	//验证是否空链表
+	prevNode := l.Tail.Prev
+	if prevNode == nil {
+		err = errors.New("index out of range for delete node")
+		return
 	}
+
+	//更新尾巴
+	prevNode.Next = nil
+	l.Tail = prevNode
+	l.Count--
 	return
 }
 
 /*
 RemoveByIndex
 @Desc	删除指定索引节点
-@Param	index int32	指定节点索引
+@Param	index	int32	指定节点索引
 */
 func (l *LinkList) RemoveByIndex(index int32) (err error) {
+	//获得当前索引数据
 	curNode, err := l.Search(index)
 	if err != nil {
 		return
 	}
 
-	prevNode := curNode.Prev
+	//更新节点指向
 	nextNode := curNode.Next
-	if prevNode != nil && nextNode != nil {
+	prevNode := curNode.Prev
+	prevNode.Next = nextNode
+	if nextNode != nil {
 		nextNode.Prev = prevNode
-		prevNode.Next = nextNode
-		l.Count--
-	} else {
-		err = errors.New("func RemoveByIndex is failed")
 	}
 
+	//更新尾节点
+	if index == l.Count-1 {
+		l.Tail = l.Head
+	}
+
+	l.Count--
 	return
 }
 
@@ -247,16 +256,8 @@ func (l *LinkList) Println() {
 		if data == nil {
 			break
 		}
-
-		fmt.Printf("data：%v | pointer：%p | prevPointer：%p | nextPointer：%p\n", data.Data, data, data.Prev, data.Next)
+		fmt.Printf("value：%v | pointer：%p | prev：%p | next：%p\n", data.Data, data, data.Prev, data.Next)
 		data = data.Next
 	}
 
-	if l.Head != nil {
-		fmt.Printf("headData:%v | headPoint:%p | headPrevPoint:%p | headNextPoint:%p\n", l.Head.Data, l.Head, l.Head.Prev, l.Head.Next)
-		fmt.Printf("tailData:%v | tailPoint:%p | tailPrevPoint:%p | tailNextPoint:%p\n", l.Tail.Data, l.Tail, l.Tail.Prev, l.Tail.Next)
-	}
-
-	fmt.Printf("count:%v | head:%p | tail:%p\n", l.Count, l.Head, l.Tail)
-	fmt.Println()
 }
