@@ -30,7 +30,7 @@ type NodeOneWay struct {
 
 /*
 CreatedLink
-@Desc 初始化链表
+@Desc 	初始化链表
 @Return	*LinkModel
 */
 func CreatedLink() *LinkOneWayModel {
@@ -39,9 +39,8 @@ func CreatedLink() *LinkOneWayModel {
 
 /*
 CreateNode
-@Desc: 创建节点
-@Param: data int32	节点数据
-@Return:	*Node	新节点
+@Desc 	创建新节点
+@Param 	data int32	节点数据
 */
 func CreateNode(data interface{}) *NodeOneWay {
 	return &NodeOneWay{
@@ -52,9 +51,9 @@ func CreateNode(data interface{}) *NodeOneWay {
 
 /*
 InsertNodeByIndex
-@Desc:下标插入
-@Param: index 	int32	在第几个位置插入
-@Param: data 	int32	插入数据
+@Desc	下标插入
+@Param 	index 	int32	在第几个位置插入
+@Param 	data 	int32	插入数据
 */
 func (l *LinkOneWayModel) InsertNodeByIndex(index int32, data interface{}) (err error) {
 	if index < 0 || index > l.Count {
@@ -91,8 +90,8 @@ func (l *LinkOneWayModel) InsertNodeByIndex(index int32, data interface{}) (err 
 
 /*
 InsertNodeByHead
-@Desc: 头插
-@Param: data	int32	插入数据
+@Desc	头插
+@Param	data	int32	插入数据
 */
 func (l *LinkOneWayModel) InsertNodeByHead(data interface{}) {
 	newNode := CreateNode(data)
@@ -109,8 +108,8 @@ func (l *LinkOneWayModel) InsertNodeByHead(data interface{}) {
 
 /*
 Append
-@Desc: 尾插 - 追加节点
-@Param: data	int32	插入数据
+@Desc	尾插 - 追加节点
+@Param	data	int32	插入数据
 */
 func (l *LinkOneWayModel) Append(data interface{}) {
 	newNode := CreateNode(data)
@@ -126,8 +125,8 @@ func (l *LinkOneWayModel) Append(data interface{}) {
 
 /*
 Delete
-@Desc: 删除节点
-@Param: index	int32	删除第几个节点数据
+@Desc	删除节点
+@Param	index	int32	删除第几个节点数据
 */
 func (l *LinkOneWayModel) Delete(index int32) error {
 	if index < 0 || index >= l.Count {
@@ -160,8 +159,7 @@ func (l *LinkOneWayModel) Delete(index int32) error {
 
 /*
 GetCount
-@Desc: 获得个数
-@Return: int32	数据个数
+@Desc	获得个数
 */
 func (l *LinkOneWayModel) GetCount() int32 {
 	return l.Count
@@ -169,8 +167,8 @@ func (l *LinkOneWayModel) GetCount() int32 {
 
 /*
 Search
-@Desc: 搜索指定位置节点信息
-@Return: int32	数据个数
+@Desc	搜索指定位置节点信息
+@Param	index int32		指定索引位置
 */
 func (l *LinkOneWayModel) Search(index int32) (node *NodeOneWay, err error) {
 	if index < 0 || index >= l.Count {
@@ -188,8 +186,7 @@ func (l *LinkOneWayModel) Search(index int32) (node *NodeOneWay, err error) {
 
 /*
 Println
-@Desc: 搜索指定位置节点信息
-@Return: int32	数据个数
+@Desc: 打印数据
 */
 func (l *LinkOneWayModel) Println() {
 	data := l.Head

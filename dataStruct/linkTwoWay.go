@@ -20,7 +20,7 @@ type LinkTwoWayMethod interface {
 
 //LinkList 双向列表列表
 type LinkList struct {
-	Count int32
+	Count int32       //数据个数
 	Head  *NodeTwoWay //表头
 	Tail  *NodeTwoWay //表尾
 }
@@ -39,7 +39,8 @@ func CreateLinkTwoWay() *LinkList {
 
 /*
 CreateNodeTwoWay
-@Desc: data interface{}	节点数据
+@Desc	创建新节点
+@Param	data interface{}	节点数据
 */
 func CreateNodeTwoWay(data interface{}) *NodeTwoWay {
 	return &NodeTwoWay{
@@ -51,8 +52,8 @@ func CreateNodeTwoWay(data interface{}) *NodeTwoWay {
 
 /*
 InsertNodeByHead
-@Desc: 头插
-@Param: data	int32	插入数据
+@Desc	头插
+@Param	data	int32	插入数据
 */
 func (l *LinkList) InsertNodeByHead(data interface{}) {
 	newNode := CreateNodeTwoWay(data)
@@ -113,8 +114,8 @@ func (l *LinkList) InsertNodeByIndex(index int32, data interface{}) (err error) 
 
 /*
 Append
-@Desc: 尾插 - 追加节点
-@Param: data	int32	插入数据
+@Desc 	尾插 - 追加节点
+@Param 	data	int32	插入数据
 */
 func (l *LinkList) Append(data interface{}) {
 	newNode := CreateNodeTwoWay(data)
@@ -222,7 +223,7 @@ func (l *LinkList) RemoveByIndex(index int32) (err error) {
 		prevNode.Next = nextNode
 		l.Count--
 	} else {
-		err = errors.New("func RemoveIndex is failed")
+		err = errors.New("func RemoveByIndex is failed")
 	}
 
 	return
@@ -238,8 +239,7 @@ func (l *LinkList) GetCount() int32 {
 
 /*
 Println
-@Desc: 搜索指定位置节点信息
-@Return: int32	数据个数
+@Desc	打印数据
 */
 func (l *LinkList) Println() {
 	data := l.Head

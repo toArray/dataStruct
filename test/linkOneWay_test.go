@@ -33,6 +33,6 @@ func TestLink(t *testing.T) {
 
 	linkList.Println()
 
-	data := linkList.Search(1)
+	data, err := linkList.Search(1)
 	fmt.Printf("searchData:%v\n", data)
 }
