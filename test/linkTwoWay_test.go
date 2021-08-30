@@ -15,6 +15,7 @@ func TestTwoWayLink(t *testing.T) {
 	linkList.Append(1)
 	linkList.Append(2)
 	linkList.Append(3)
+	linkList.InsertNodeByHead(4)
 	linkList.RemoveByIndex(0)
 	linkList.RemoveByIndex(0)
 	//linkList.RemoveByIndex(0)

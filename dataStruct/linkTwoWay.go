@@ -12,9 +12,9 @@ type LinkTwoWayMethod interface {
 	Append(data interface{})                                     //插入 - 尾部追加
 	Search(index int32) (node *NodeTwoWay, err error)            //查找
 	GetCount() int32                                             //获取个数
-	RemoveHead() error                                           //移除头节点
-	RemoveTail() error                                           //移除尾节点
-	RemoveByIndex(index int32) error                             //通过索引移除节点
+	RemoveHead() error                                           //删除 - 移除头节点
+	RemoveTail() error                                           //删除 - 移除尾节点
+	RemoveByIndex(index int32) error                             //删除 - 通过索引移除节点
 }
 
 //LinkList 双向列表数据结构
@@ -44,7 +44,7 @@ func CreateLinkTwoWay() *LinkList {
 /*
 CreateNodeTwoWay
 @Desc	创建新节点
-@Param	data interface{}	节点数据
+@Param	data	interface{}	节点数据
 */
 func CreateNodeTwoWay(data interface{}) *NodeTwoWay {
 	return &NodeTwoWay{
@@ -83,7 +83,7 @@ func (l *LinkList) InsertNodeByHead(data interface{}) {
 InsertNodeByIndex
 @Desc 	指定索引位置插入
 @Param 	index	int32		索引位置
-@Param 	data	interface	插入数据
+@Param 	data	interface{}	插入数据
 */
 func (l *LinkList) InsertNodeByIndex(index int32, data interface{}) (err error) {
 	if index < 0 || index > l.Count {
@@ -124,7 +124,7 @@ func (l *LinkList) InsertNodeByIndex(index int32, data interface{}) (err error) 
 /*
 Append
 @Desc 	尾插 - 追加节点
-@Param 	data	int32	插入数据
+@Param 	data	interface{}	插入数据
 */
 func (l *LinkList) Append(data interface{}) {
 	newNode := CreateNodeTwoWay(data)
@@ -198,7 +198,7 @@ func (l *LinkList) RemoveTail() (err error) {
 	//验证是否空链表
 	prevNode := l.Tail.Prev
 	if prevNode == nil {
-		err = errors.New("index out of range for delete node")
+		err = errors.New("is an empty list for remove tail")
 		return
 	}
 
@@ -218,6 +218,7 @@ func (l *LinkList) RemoveByIndex(index int32) (err error) {
 	//获得当前索引数据
 	curNode, err := l.Search(index)
 	if err != nil {
+		err = errors.New("index out of range for remove index")
 		return
 	}
 
@@ -259,5 +260,4 @@ func (l *LinkList) Println() {
 		fmt.Printf("value：%v | pointer：%p | prev：%p | next：%p\n", data.Data, data, data.Prev, data.Next)
 		data = data.Next
 	}
-
 }
