@@ -34,7 +34,12 @@ CreatedLink
 @Return	*LinkModel
 */
 func CreatedLink() *LinkOneWayModel {
-	return &LinkOneWayModel{}
+	node := CreateNode(0) //创建哨兵节点
+	return &LinkOneWayModel{
+		Count: 0,
+		Head:  node,
+		Tail:  node,
+	}
 }
 
 /*
@@ -94,13 +99,14 @@ InsertNodeByHead
 @Param	data	int32	插入数据
 */
 func (l *LinkOneWayModel) InsertNodeByHead(data interface{}) {
+	//更新头节点
 	newNode := CreateNode(data)
-	if l.Head == nil {
-		l.Head = newNode
+	newNode.Next = l.Head.Next
+	l.Head.Next = newNode
+
+	//更新尾巴节点
+	if newNode.Next == nil {
 		l.Tail = newNode
-	} else {
-		newNode.Next = l.Head
-		l.Head = newNode
 	}
 
 	l.Count++
@@ -113,14 +119,9 @@ Append
 */
 func (l *LinkOneWayModel) Append(data interface{}) {
 	newNode := CreateNode(data)
-	if l.Tail == nil {
-		l.Head = newNode
-	} else {
-		l.Tail.Next = newNode
-	}
-
-	l.Count++
+	l.Tail.Next = newNode
 	l.Tail = newNode
+	l.Count++
 }
 
 /*
@@ -135,7 +136,7 @@ func (l *LinkOneWayModel) Delete(index int32) error {
 
 	//找到下个节点
 	var preNode *NodeOneWay
-	currentNode := l.Head
+	currentNode := l.Head.Next
 	for i := int32(0); i < index; i++ {
 		preNode = currentNode
 		currentNode = currentNode.Next
@@ -148,7 +149,7 @@ func (l *LinkOneWayModel) Delete(index int32) error {
 
 	//删除
 	if index == 0 {
-		l.Head = currentNode.Next
+		l.Head.Next = currentNode.Next
 	} else {
 		preNode.Next = currentNode.Next
 	}
@@ -176,7 +177,7 @@ func (l *LinkOneWayModel) Search(index int32) (node *NodeOneWay, err error) {
 		return
 	}
 
-	node = l.Head
+	node = l.Head.Next
 	for i := int32(0); i < index; i++ {
 		node = node.Next
 	}
