@@ -1,4 +1,4 @@
-package dataStruct
+package linkSingle
 
 import (
 	"errors"
@@ -10,34 +10,34 @@ type LinkMethod interface {
 	InsertNodeByHead(data interface{})                           //插入 - 头插
 	InsertNodeByIndex(index int32, data interface{}) (err error) //插入 - 指定下标插入
 	Append(data interface{})                                     //插入 - 尾部追加
-	Delete(index int32) error                                    //删除 - 指定索引删除
+	Search(index int32) (node *Node, err error)                  //查找
+	GetCount() int32                                             //获取个数
+	DeleteByIndex(index int32) (err error)                       //删除 - 指定索引删除
 	RemoveHead() error                                           //删除 - 删除头
 	RemoveTail() error                                           //删除 - 删除尾
-	Search(index int32) (node *NodeOneWay, err error)            //查找
-	GetCount() int32                                             //获取个数
 }
 
-//LinkOneWayModel 单向链表数据结构
-type LinkOneWayModel struct {
-	Count int32       //数据个数
-	Head  *NodeOneWay //表头
-	Tail  *NodeOneWay //表尾
+//LinkList 单向链表列表
+type LinkList struct {
+	Count int32 //数据个数
+	Head  *Node //表头
+	Tail  *Node //表尾
 }
 
-//NodeOneWay 链表节点
-type NodeOneWay struct {
+//Node 链表节点
+type Node struct {
 	Data interface{} //数据域
-	Next *NodeOneWay //指针域
+	Next *Node       //指针域
 }
 
 /*
-CreatedLink
+CreatedLinkList
 @Desc 	初始化链表
 @Return	*LinkModel
 */
-func CreatedLink() *LinkOneWayModel {
+func CreatedLinkList() *LinkList {
 	node := CreateNode(0) //创建哨兵节点
-	return &LinkOneWayModel{
+	return &LinkList{
 		Count: 0,
 		Head:  node,
 		Tail:  node,
@@ -49,8 +49,8 @@ CreateNode
 @Desc 	创建新节点
 @Param 	data int32	节点数据
 */
-func CreateNode(data interface{}) *NodeOneWay {
-	return &NodeOneWay{
+func CreateNode(data interface{}) *Node {
+	return &Node{
 		Next: nil,
 		Data: data,
 	}
@@ -62,7 +62,7 @@ InsertNodeByIndex
 @Param 	index 	int32	在第几个位置插入
 @Param 	data 	int32	插入数据
 */
-func (l *LinkOneWayModel) InsertNodeByIndex(index int32, data interface{}) (err error) {
+func (l *LinkList) InsertNodeByIndex(index int32, data interface{}) (err error) {
 	if index < 0 || index > l.Count {
 		err = errors.New("func InsertNodeByIndex index out of size")
 		return
@@ -81,7 +81,6 @@ func (l *LinkOneWayModel) InsertNodeByIndex(index int32, data interface{}) (err 
 	}
 
 	//指定索引插入
-	newNode := CreateNode(data)
 	curNode, err := l.Search(index - 1)
 	if err != nil {
 		err = errors.New("search by index out of size")
@@ -89,6 +88,7 @@ func (l *LinkOneWayModel) InsertNodeByIndex(index int32, data interface{}) (err 
 	}
 
 	//success
+	newNode := CreateNode(data)
 	newNode.Next = curNode.Next
 	curNode.Next = newNode
 	l.Count++
@@ -100,7 +100,7 @@ InsertNodeByHead
 @Desc	头插
 @Param	data	int32	插入数据
 */
-func (l *LinkOneWayModel) InsertNodeByHead(data interface{}) {
+func (l *LinkList) InsertNodeByHead(data interface{}) {
 	//更新头节点
 	newNode := CreateNode(data)
 	newNode.Next = l.Head.Next
@@ -119,7 +119,7 @@ Append
 @Desc	尾插 - 追加节点
 @Param	data	int32	插入数据
 */
-func (l *LinkOneWayModel) Append(data interface{}) {
+func (l *LinkList) Append(data interface{}) {
 	newNode := CreateNode(data)
 	l.Tail.Next = newNode
 	l.Tail = newNode
@@ -127,17 +127,17 @@ func (l *LinkOneWayModel) Append(data interface{}) {
 }
 
 /*
-Delete
-@Desc	删除节点
+DeleteByIndex
+@Desc	删除指定索引节点
 @Param	index	int32	删除第几个节点数据
 */
-func (l *LinkOneWayModel) Delete(index int32) error {
+func (l *LinkList) DeleteByIndex(index int32) (err error) {
 	if index < 0 || index >= l.Count {
 		return errors.New("func Delete index out of size")
 	}
 
 	//找到下个节点
-	var preNode *NodeOneWay
+	var preNode *Node
 	currentNode := l.Head.Next
 	for i := int32(0); i < index; i++ {
 		preNode = currentNode
@@ -164,7 +164,7 @@ func (l *LinkOneWayModel) Delete(index int32) error {
 RemoveHead
 @Desc	删除头节点
 */
-func (l *LinkOneWayModel) RemoveHead() (err error) {
+func (l *LinkList) RemoveHead() (err error) {
 	//是否空链表
 	firstNode := l.Head.Next
 	if firstNode == nil {
@@ -189,7 +189,7 @@ func (l *LinkOneWayModel) RemoveHead() (err error) {
 RemoveTail
 @Desc	删除尾节点
 */
-func (l *LinkOneWayModel) RemoveTail() (err error) {
+func (l *LinkList) RemoveTail() (err error) {
 	//是否空链表
 	currentNode := l.Head.Next
 	if currentNode == nil {
@@ -198,7 +198,7 @@ func (l *LinkOneWayModel) RemoveTail() (err error) {
 	}
 
 	//找到倒数第二个节点
-	var preNode *NodeOneWay
+	var preNode *Node
 	for currentNode.Next != nil {
 		preNode = currentNode
 		currentNode = currentNode.Next
@@ -220,7 +220,7 @@ func (l *LinkOneWayModel) RemoveTail() (err error) {
 GetCount
 @Desc	获得个数
 */
-func (l *LinkOneWayModel) GetCount() int32 {
+func (l *LinkList) GetCount() int32 {
 	return l.Count
 }
 
@@ -229,7 +229,7 @@ Search
 @Desc	搜索指定位置节点信息
 @Param	index int32		指定索引位置
 */
-func (l *LinkOneWayModel) Search(index int32) (node *NodeOneWay, err error) {
+func (l *LinkList) Search(index int32) (node *Node, err error) {
 	if index < 0 || index >= l.Count {
 		err = errors.New("index out of range for search node")
 		return
@@ -247,7 +247,7 @@ func (l *LinkOneWayModel) Search(index int32) (node *NodeOneWay, err error) {
 Println
 @Desc: 打印数据
 */
-func (l *LinkOneWayModel) Println() {
+func (l *LinkList) Println() {
 	data := l.Head
 	for {
 		if data == nil {
@@ -257,4 +257,5 @@ func (l *LinkOneWayModel) Println() {
 		fmt.Printf("value：%v | pointer：%p | nextPointer：%p\n", data.Data, data, data.Next)
 		data = data.Next
 	}
+	fmt.Println()
 }

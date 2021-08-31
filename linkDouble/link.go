@@ -1,38 +1,38 @@
-package dataStruct
+package linkDouble
 
 import (
 	"errors"
 	"fmt"
 )
 
-//LinkTwoWayMethod 双向链表实现接口
-type LinkTwoWayMethod interface {
+//LinkMethod 双向链表实现接口
+type LinkMethod interface {
 	InsertNodeByHead(data interface{})                           //插入 - 头插
 	InsertNodeByIndex(index int32, data interface{}) (err error) //插入 - 指定下标插入
 	Append(data interface{})                                     //插入 - 尾部追加
-	Search(index int32) (node *NodeTwoWay, err error)            //查找
+	Search(index int32) (node *Node, err error)                  //查找
 	GetCount() int32                                             //获取个数
 	RemoveHead() error                                           //删除 - 移除头节点
 	RemoveTail() error                                           //删除 - 移除尾节点
 	RemoveByIndex(index int32) error                             //删除 - 通过索引移除节点
 }
 
-//LinkList 双向列表数据结构
+//LinkList 双向链表列表
 type LinkList struct {
-	Count int32       //数据个数
-	Head  *NodeTwoWay //表头
-	Tail  *NodeTwoWay //表尾
+	Count int32 //数据个数
+	Head  *Node //表头
+	Tail  *Node //表尾
 }
 
-//NodeTwoWay 双向链表节点
-type NodeTwoWay struct {
+//Node 双向链表节点
+type Node struct {
 	Data interface{} //数据域
-	Next *NodeTwoWay //下个指针域
-	Prev *NodeTwoWay //上个指针域
+	Next *Node       //下个指针域
+	Prev *Node       //上个指针域
 }
 
-//CreateLinkTwoWay 创建双向链表
-func CreateLinkTwoWay() *LinkList {
+//CreateLinkList 创建双向链表
+func CreateLinkList() *LinkList {
 	node := CreateNodeTwoWay(0) //创建哨兵节点
 	return &LinkList{
 		Count: 0,
@@ -46,8 +46,8 @@ CreateNodeTwoWay
 @Desc	创建新节点
 @Param	data	interface{}	节点数据
 */
-func CreateNodeTwoWay(data interface{}) *NodeTwoWay {
-	return &NodeTwoWay{
+func CreateNodeTwoWay(data interface{}) *Node {
+	return &Node{
 		Data: data,
 		Next: nil,
 		Prev: nil,
@@ -65,8 +65,6 @@ func (l *LinkList) InsertNodeByHead(data interface{}) {
 	newNode := CreateNodeTwoWay(data)
 	newNode.Next = firstNode
 	newNode.Prev = l.Head
-
-	//更新第一个节点
 	l.Head.Next = newNode
 
 	//更新旧节点指向和尾巴节点
@@ -128,17 +126,8 @@ Append
 */
 func (l *LinkList) Append(data interface{}) {
 	newNode := CreateNodeTwoWay(data)
-	tailNode := l.Tail
-
-	//空链表
-	if tailNode.Prev == nil {
-		newNode.Prev = l.Head
-		l.Head.Next = newNode
-	} else {
-		newNode.Prev = tailNode
-		tailNode.Next = newNode
-	}
-
+	newNode.Prev = l.Tail
+	l.Tail.Next = newNode
 	l.Tail = newNode
 	l.Count++
 }
@@ -148,7 +137,7 @@ Search
 @Desc 	搜索信息
 @Param	index int32	索引位置
 */
-func (l *LinkList) Search(index int32) (node *NodeTwoWay, err error) {
+func (l *LinkList) Search(index int32) (node *Node, err error) {
 	if index < 0 || index >= l.Count {
 		err = errors.New("index out of range for search node")
 		return
@@ -260,4 +249,5 @@ func (l *LinkList) Println() {
 		fmt.Printf("value：%v | pointer：%p | prev：%p | next：%p\n", data.Data, data, data.Prev, data.Next)
 		data = data.Next
 	}
+	fmt.Println()
 }

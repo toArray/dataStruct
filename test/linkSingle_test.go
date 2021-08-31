@@ -1,23 +1,32 @@
 package test
 
 import (
-	"luoqiangDataStruct/dataStruct"
+	"luoqiangDataStruct/linkSingle"
 	"testing"
 )
 
 func TestLink(t *testing.T) {
-	linkList := dataStruct.CreatedLink()
+	linkList := linkSingle.CreatedLinkList()
+	linkList.Append(1)
+	linkList.Append(2)
+	linkList.Println()
+
+	linkList.InsertNodeByIndex(0, 1)
+	linkList.InsertNodeByIndex(1, 2)
+	linkList.Println()
+
 	//linkList.InsertNodeByHead(1)
 	//linkList.InsertNodeByHead(2)
 	//linkList.InsertNodeByHead(3)
-	linkList.Append(1)
-	linkList.Append(2)
-	linkList.Append(3)
+	//linkList.Append(1)
+	//linkList.Append(2)
+	//linkList.Append(3)
 	//linkList.InsertNodeByHead(3)
 	//linkList.InsertNodeByIndex(0, 1)
 	//linkList.InsertNodeByIndex(0, 2)
 	//linkList.InsertNodeByIndex(2, 3)
 	//node, err := linkList.Search(2)
+	//linkList.RemoveHead()
 	//linkList.RemoveHead()
 	//linkList.RemoveHead()
 	//err := linkList.RemoveHead()
@@ -26,9 +35,9 @@ func TestLink(t *testing.T) {
 	//linkList.Delete(0)
 	//linkList.Delete(0)
 	//linkList.Delete(0)
-	linkList.RemoveTail()
-	linkList.RemoveTail()
-	linkList.RemoveTail()
+	//linkList.RemoveTail()
+	//linkList.RemoveTail()
+	//linkList.RemoveTail()
 	//linkList.RemoveTail()
 	//linkList.Append(1)
 	//linkList.Append(1)
@@ -36,7 +45,7 @@ func TestLink(t *testing.T) {
 	//fmt.Println(err)
 	//err := linkList.Delete(2)
 	//fmt.Println(err, node)
-	linkList.Println()
+	//linkList.Println()
 
 	////头插
 	//linkList.InsertNodeByHead(0)
