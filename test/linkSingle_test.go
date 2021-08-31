@@ -9,11 +9,15 @@ func TestLink(t *testing.T) {
 	linkList := linkSingle.CreatedLinkList()
 	linkList.Append(1)
 	linkList.Append(2)
+	linkList.Append(3)
 	linkList.Println()
 
-	linkList.InsertNodeByIndex(0, 1)
-	linkList.InsertNodeByIndex(1, 2)
+	linkList.Reverse()
 	linkList.Println()
+	//
+	//linkList.InsertNodeByIndex(0, 1)
+	//linkList.InsertNodeByIndex(1, 2)
+	//linkList.Println()
 
 	//linkList.InsertNodeByHead(1)
 	//linkList.InsertNodeByHead(2)

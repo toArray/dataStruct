@@ -15,6 +15,8 @@ type LinkMethod interface {
 	DeleteByIndex(index int32) (err error)                       //删除 - 指定索引删除
 	RemoveHead() error                                           //删除 - 删除头
 	RemoveTail() error                                           //删除 - 删除尾
+
+	Reverse() //反转链表
 }
 
 //LinkList 单向链表列表
@@ -105,13 +107,12 @@ func (l *LinkList) InsertNodeByHead(data interface{}) {
 	newNode := CreateNode(data)
 	newNode.Next = l.Head.Next
 	l.Head.Next = newNode
+	l.Count++
 
 	//更新尾巴节点
 	if newNode.Next == nil {
 		l.Tail = newNode
 	}
-
-	l.Count++
 }
 
 /*
@@ -257,5 +258,22 @@ func (l *LinkList) Println() {
 		fmt.Printf("value：%v | pointer：%p | nextPointer：%p\n", data.Data, data, data.Next)
 		data = data.Next
 	}
+	fmt.Printf("head: %v | tail: %v", l.Head, l.Tail)
 	fmt.Println()
+}
+
+/*
+Reverse
+@Desc: 反转链表
+*/
+func (l *LinkList) Reverse() {
+	cur := l.Head.Next
+	head := l.Head.Next
+	var prev *Node
+	for cur != nil {
+		prev, cur, cur.Next = cur, cur.Next, prev
+	}
+
+	l.Head.Next = prev
+	l.Tail = head
 }
