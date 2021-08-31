@@ -182,11 +182,11 @@ func (l *LinkList) RemoveHead() (err error) {
 	}
 
 	//更新尾节点
-	if l.Count == 1 {
+	l.Count--
+	if l.Count == 0 {
 		l.Tail = l.Head
 	}
 
-	l.Count--
 	return
 }
 
@@ -230,7 +230,7 @@ func (l *LinkList) RemoveByIndex(index int32) (err error) {
 		nextNode.Prev = prevNode
 	}
 
-	//更新尾节点
+	//更新尾节
 	if index == l.Count-1 {
 		l.Tail = l.Head
 	}

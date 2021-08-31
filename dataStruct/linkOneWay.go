@@ -10,7 +10,9 @@ type LinkMethod interface {
 	InsertNodeByHead(data interface{})                           //插入 - 头插
 	InsertNodeByIndex(index int32, data interface{}) (err error) //插入 - 指定下标插入
 	Append(data interface{})                                     //插入 - 尾部追加
-	Delete(index int32) error                                    //删除
+	Delete(index int32) error                                    //删除 - 指定索引删除
+	RemoveHead() error                                           //删除 - 删除头
+	RemoveTail() error                                           //删除 - 删除尾
 	Search(index int32) (node *NodeOneWay, err error)            //查找
 	GetCount() int32                                             //获取个数
 }
@@ -144,7 +146,7 @@ func (l *LinkOneWayModel) Delete(index int32) error {
 
 	//如果是删除最后一个则要更新tail
 	if index == l.Count-1 {
-		l.Tail = preNode
+		l.Tail = l.Head
 	}
 
 	//删除
@@ -156,6 +158,62 @@ func (l *LinkOneWayModel) Delete(index int32) error {
 
 	l.Count--
 	return nil
+}
+
+/*
+RemoveHead
+@Desc	删除头节点
+*/
+func (l *LinkOneWayModel) RemoveHead() (err error) {
+	//是否空链表
+	firstNode := l.Head.Next
+	if firstNode == nil {
+		err = errors.New("is an empty list for remove head")
+		return
+	}
+
+	//删除头节点
+	secondNode := firstNode.Next
+	l.Head.Next = secondNode
+
+	//更新尾节点
+	l.Count--
+	if l.Count == 0 {
+		l.Tail = l.Head
+	}
+
+	return
+}
+
+/*
+RemoveTail
+@Desc	删除尾节点
+*/
+func (l *LinkOneWayModel) RemoveTail() (err error) {
+	//是否空链表
+	currentNode := l.Head.Next
+	if currentNode == nil {
+		err = errors.New("is an empty list for remove tail")
+		return
+	}
+
+	//找到倒数第二个节点
+	var preNode *NodeOneWay
+	for currentNode.Next != nil {
+		preNode = currentNode
+		currentNode = currentNode.Next
+	}
+
+	//更新尾节点
+	if preNode != nil {
+		preNode.Next = nil
+		l.Tail = preNode
+	} else {
+		l.Head.Next = nil
+		l.Tail = l.Head
+	}
+
+	return
 }
 
 /*
@@ -196,9 +254,7 @@ func (l *LinkOneWayModel) Println() {
 			break
 		}
 
-		fmt.Printf("data：%v pointer：%p nextPointer：%p\n", data.Data, data, data.Next)
+		fmt.Printf("value：%v | pointer：%p | nextPointer：%p\n", data.Data, data, data.Next)
 		data = data.Next
 	}
-
-	fmt.Println()
 }

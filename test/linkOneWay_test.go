@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"luoqiangDataStruct/dataStruct"
 	"testing"
 )
@@ -11,17 +10,32 @@ func TestLink(t *testing.T) {
 	//linkList.InsertNodeByHead(1)
 	//linkList.InsertNodeByHead(2)
 	//linkList.InsertNodeByHead(3)
-	//linkList.Append(1)
-	//linkList.Append(2)
-	//linkList.Append(3)
+	linkList.Append(1)
+	linkList.Append(2)
+	linkList.Append(3)
 	//linkList.InsertNodeByHead(3)
-	linkList.InsertNodeByIndex(0, 1)
-	linkList.InsertNodeByIndex(0, 2)
-	linkList.InsertNodeByIndex(2, 3)
-	node, err := linkList.Search(2)
-
+	//linkList.InsertNodeByIndex(0, 1)
+	//linkList.InsertNodeByIndex(0, 2)
+	//linkList.InsertNodeByIndex(2, 3)
+	//node, err := linkList.Search(2)
+	//linkList.RemoveHead()
+	//linkList.RemoveHead()
+	//err := linkList.RemoveHead()
+	//err = linkList.RemoveHead()
+	//err = linkList.RemoveHead()
+	//linkList.Delete(0)
+	//linkList.Delete(0)
+	//linkList.Delete(0)
+	linkList.RemoveTail()
+	linkList.RemoveTail()
+	linkList.RemoveTail()
+	//linkList.RemoveTail()
+	//linkList.Append(1)
+	//linkList.Append(1)
+	//err = linkList.RemoveHead()
+	//fmt.Println(err)
 	//err := linkList.Delete(2)
-	fmt.Println(err, node)
+	//fmt.Println(err, node)
 	linkList.Println()
 
 	////头插
