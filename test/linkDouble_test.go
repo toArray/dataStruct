@@ -67,3 +67,50 @@ func TestLinkDouble(t *testing.T) {
 	//
 	//linkList.Println()
 }
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
+	res := new(ListNode)
+	tail := res
+
+	cur1 := l1
+	cur2 := l2
+	for {
+		//退出条件
+		if cur1 == nil && cur2 == nil {
+			break
+		}
+
+		if cur1 != nil {
+			if cur2 == nil {
+				tail.Next = cur1
+				cur1 = nil
+			} else {
+				if cur1.Val >= cur2.Val {
+					tail.Next = &ListNode{Val: cur2.Val}
+					tail = tail.Next
+					cur2 = cur2.Next
+				}
+			}
+		}
+
+		if cur2 != nil {
+			if cur1 == nil {
+				tail.Next = cur2
+				cur2 = nil
+			} else {
+				if cur2.Val >= cur1.Val {
+					tail.Next = &ListNode{Val: cur1.Val}
+					tail = tail.Next
+					cur1 = cur1.Next
+				}
+			}
+		}
+	}
+
+	return res
+}
