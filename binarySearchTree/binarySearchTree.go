@@ -209,7 +209,7 @@ func (t *Tree) Delete(data int32) {
 		return
 	}
 
-	//未找到节点
+	//找到需要删除的节点
 	node := t.Search(data)
 	if node == nil {
 		return
@@ -260,12 +260,14 @@ func (t *Tree) Delete(data int32) {
 	if node.Left != nil && node.Right != nil {
 		replaceNode := node.rightMinNode() //后继节点
 
-		//情况3-1：删除的后继节点刚好是右子树
+		//情况3-1
+		//删除的后继节点刚好是右子树
 		if node.Right == replaceNode {
 			if parentNode == nil {
 				replaceNode.Parent = nil
 				t.Root = replaceNode
 			} else {
+				//维护后继节点的左节点和父节点
 				replaceNode.Parent = parentNode
 				if parentNode.Left == node {
 					parentNode.Left = replaceNode
@@ -281,17 +283,17 @@ func (t *Tree) Delete(data int32) {
 			}
 		} else {
 			//情况3-2
-			//维护后继节点的父节点
 			replaceNodeParent := replaceNode.Parent //代替节点的父节点
+
+			//后继节点没有右子树,维护后继节点的父节点
 			if replaceNode.Right == nil {
-				//后继节点没有右子树,后继节点是叶子节点
 				if replaceNodeParent.Left == replaceNode {
 					replaceNodeParent.Left = nil
 				} else {
 					replaceNodeParent.Right = nil
 				}
 			} else {
-				//后继节点有右子树
+				//后继节点有右子树,维护后继节点的右节点和父节点
 				if replaceNodeParent.Left == replaceNode {
 					replaceNodeParent.Left = replaceNode.Right
 				} else {
